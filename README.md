@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 📋 Simple Board - QA Automation Portfolio
 
 > **QA 8년차의 자동화 테스트 포트폴리오**  
