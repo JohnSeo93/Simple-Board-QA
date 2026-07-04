@@ -1,0 +1,9 @@
+Options -Indexes
+RewriteEngine On
+
+# Serve existing static files directly
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Route everything else through index.php
+RewriteRule ^ index.php [L]

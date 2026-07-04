@@ -1,0 +1,534 @@
+{
+  "info": {
+    "name": "Simple Board API",
+    "description": "Simple Board 게시판 API 자동화 테스트 컬렉션\nQA 포트폴리오용 - PRD v1.0 기준",
+    "_postman_id": "simple-board-api-collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost/simple_board", "type": "string" },
+    { "key": "username", "value": "testuser01", "type": "string" },
+    { "key": "password", "value": "password123", "type": "string" },
+    { "key": "nickname", "value": "테스트유저", "type": "string" },
+    { "key": "postId",   "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔐 인증 (Auth)",
+      "item": [
+        {
+          "name": "[성공] 회원가입",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('메시지 확인', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.include('완료');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"password_confirm\": \"{{password}}\",\n  \"nickname\": \"{{nickname}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 회원가입 - 아이디 중복",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('중복 에러 메시지', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.include('중복');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"password_confirm\": \"{{password}}\",\n  \"nickname\": \"중복닉네임\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 회원가입 - 비밀번호 불일치",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('불일치 메시지', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.include('일치');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser99\",\n  \"password\": \"password123\",\n  \"password_confirm\": \"wrongpass\",\n  \"nickname\": \"닉네임\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 회원가입 - 아이디 짧음 (3자)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"abc\",\n  \"password\": \"password123\",\n  \"password_confirm\": \"password123\",\n  \"nickname\": \"닉네임\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 회원가입 - 필수값 누락",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/signup",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"\",\n  \"password\": \"\",\n  \"password_confirm\": \"\",\n  \"nickname\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[성공] 로그인",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('user 객체 반환', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.user).to.have.property('id');",
+                  "  pm.expect(j.user.username).to.eql(pm.variables.get('username'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 로그인 - 잘못된 비밀번호",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 401 Unauthorized', () => pm.response.to.have.status(401));",
+                  "pm.test('오류 메시지 일치', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.eql('아이디 또는 비밀번호가 일치하지 않습니다.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"wrongpassword\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 로그인 - 존재하지 않는 아이디",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 401 Unauthorized', () => pm.response.to.have.status(401));",
+                  "pm.test('오류 메시지', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.eql('아이디 또는 비밀번호가 일치하지 않습니다.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"notexistuser\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📝 게시글 (Posts)",
+      "item": [
+        {
+          "name": "[성공] 게시글 목록 조회",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('posts 배열 반환', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.have.property('posts');",
+                  "  pm.expect(j.posts).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/posts"
+          }
+        },
+        {
+          "name": "[성공] 게시글 작성",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('post_id 반환 및 저장', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.have.property('post_id');",
+                  "  pm.variables.set('postId', j.post_id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/posts",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"테스트 게시글 제목\",\n  \"content\": \"테스트 게시글 내용입니다.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 게시글 작성 - 제목 누락",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 400 Bad Request', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/posts",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"content\": \"내용은 있음\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[성공] 게시글 상세 조회",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('post 및 comments 반환', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.have.property('post');",
+                  "  pm.expect(j).to.have.property('comments');",
+                  "  pm.expect(j.post.view_count).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/posts/{{postId}}"
+          }
+        },
+        {
+          "name": "[성공] 게시글 수정",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('수정 메시지', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.include('수정');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/posts/{{postId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"수정된 게시글 제목\",\n  \"content\": \"수정된 게시글 내용입니다.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 게시글 조회 - 존재하지 않는 ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 404 Not Found', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/posts/99999"
+          }
+        },
+        {
+          "name": "[성공] 게시글 삭제 (논리 삭제)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('삭제 메시지', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.include('삭제');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/posts/{{postId}}"
+          }
+        },
+        {
+          "name": "[검증] 삭제 후 목록에 미노출 확인",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 200', () => pm.response.to.have.status(200));",
+                  "pm.test('삭제된 게시글 목록 미노출', () => {",
+                  "  const j = pm.response.json();",
+                  "  const deletedId = parseInt(pm.variables.get('postId'));",
+                  "  const found = j.posts.some(p => parseInt(p.id) === deletedId);",
+                  "  pm.expect(found).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/posts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "💬 댓글 (Comments)",
+      "item": [
+        {
+          "name": "[사전작업] 댓글 테스트용 게시글 작성",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 201', () => pm.response.to.have.status(201));",
+                  "const j = pm.response.json();",
+                  "pm.variables.set('postId', j.post_id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/posts",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"댓글 테스트용 게시글\",\n  \"content\": \"댓글을 테스트합니다.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[성공] 댓글 작성",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('댓글 등록 메시지', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.include('댓글');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/comments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"post_id\": {{postId}},\n  \"content\": \"테스트 댓글 내용입니다.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 댓글 작성 - 내용 누락",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 400 Bad Request', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/comments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"post_id\": {{postId}},\n  \"content\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[실패] 댓글 작성 - 미인증 (로그아웃 후 시도)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 401 Unauthorized', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/comments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"post_id\": {{postId}},\n  \"content\": \"미인증 댓글 시도\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔓 로그아웃 (Logout)",
+      "item": [
+        {
+          "name": "[성공] 로그아웃",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status: 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('로그아웃 메시지', () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.include('로그아웃');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/logout"
+          }
+        }
+      ]
+    }
+  ]
+}

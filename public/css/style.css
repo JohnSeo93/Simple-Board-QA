@@ -1,0 +1,195 @@
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #F8F9FB;
+  --surface:   #FFFFFF;
+  --border:    #E2E6ED;
+  --primary:   #3B5BDB;
+  --primary-h: #2F4AC0;
+  --danger:    #E03131;
+  --text:      #1A1D23;
+  --muted:     #6B7280;
+  --radius:    8px;
+  --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+}
+
+body {
+  font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── Layout ───────────────────────────────────────────────── */
+.nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav__brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -.4px;
+}
+.nav__actions { display: flex; gap: 12px; align-items: center; }
+.nav__user { font-size: .85rem; color: var(--muted); }
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+/* ── Auth pages ───────────────────────────────────────────── */
+.auth-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+.auth-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+}
+.auth-card h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  color: var(--primary);
+  letter-spacing: -.5px;
+}
+
+/* ── Form ─────────────────────────────────────────────────── */
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-group label { font-size: .85rem; font-weight: 600; color: var(--muted); }
+.form-control {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: .95rem;
+  transition: border-color .15s;
+  outline: none;
+  width: 100%;
+}
+.form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,91,219,.12); }
+textarea.form-control { resize: vertical; min-height: 200px; }
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius);
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background .15s, opacity .15s;
+  line-height: 1;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); }
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+.btn-outline:hover { background: rgba(59,91,219,.06); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { opacity: .88; }
+.btn-sm { padding: 6px 12px; font-size: .82rem; }
+.btn-block { width: 100%; }
+
+/* ── Alert ────────────────────────────────────────────────── */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: .88rem;
+  margin-bottom: 16px;
+}
+.alert-danger  { background: #FFF5F5; color: #C92A2A; border: 1px solid #FFC9C9; }
+.alert-success { background: #EBFBEE; color: #2B8A3E; border: 1px solid #B2F2BB; }
+
+/* ── Table ────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-header h2 { font-size: 1rem; font-weight: 700; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 13px 20px; text-align: left; font-size: .9rem; }
+th { background: var(--bg); font-weight: 600; font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+tbody tr { border-top: 1px solid var(--border); }
+tbody tr:hover { background: #f6f8ff; }
+.post-title-link { color: var(--primary); font-weight: 500; }
+.post-title-link:hover { text-decoration: underline; }
+td.muted { color: var(--muted); font-size: .85rem; }
+
+/* ── Post detail ──────────────────────────────────────────── */
+.post-header { padding: 28px 32px 20px; border-bottom: 1px solid var(--border); }
+.post-header h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+.post-meta { display: flex; gap: 20px; font-size: .83rem; color: var(--muted); align-items: center; }
+.post-body { padding: 28px 32px; white-space: pre-wrap; font-size: .95rem; line-height: 1.8; border-bottom: 1px solid var(--border); min-height: 120px; }
+.post-actions { padding: 16px 32px; display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ── Comments ─────────────────────────────────────────────── */
+.comments-section { margin-top: 24px; }
+.comments-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+.comment-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+}
+.comment-author { font-size: .82rem; font-weight: 700; margin-bottom: 4px; }
+.comment-date { font-size: .78rem; color: var(--muted); margin-bottom: 8px; }
+.comment-content { font-size: .9rem; }
+.comment-form { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+.comment-form textarea { min-height: 80px; }
+
+/* ── Write / Edit form ────────────────────────────────────── */
+.page-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 24px; }
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px;
+}
+.form-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+/* ── Link helper ──────────────────────────────────────────── */
+.auth-link { text-align: center; margin-top: 16px; font-size: .85rem; color: var(--muted); }
+.auth-link a { color: var(--primary); font-weight: 600; }
