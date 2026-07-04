@@ -1,7 +1,31 @@
-# 📋 Simple Board - QA 포트폴리오 프로젝트
+<<<<<<< HEAD
+# 📋 Simple Board - QA Automation Portfolio
 
-> **XAMPP + PHP + MySQL 기반 게시판 서비스**  
-> Postman · Selenium · Playwright 자동화 테스트 학습용
+> **QA 8년차의 자동화 테스트 포트폴리오**  
+> XAMPP + PHP + MySQL 기반 게시판 서비스를 직접 구축하고  
+> Postman · Playwright를 활용한 자동화 테스트를 수행했습니다.
+
+---
+
+## 🎯 프로젝트 목적
+
+게임/앱/콘솔 도메인 QA 경력을 바탕으로  
+**API 자동화 테스트 · E2E 자동화 테스트** 역량을 증명하기 위해 제작했습니다.
+
+단순히 툴을 사용하는 것에서 나아가  
+**환경 구성 → 이슈 발견 → 원인 분석 → 해결** 전 과정을 직접 경험했습니다.
+
+---
+
+## 🛠 기술 스택
+
+| 분류 | 기술 |
+|------|------|
+| 서버 | XAMPP (Apache + MySQL) |
+| 백엔드 | PHP 8.2 |
+| DB | MariaDB |
+| API 테스트 | Postman |
+| E2E 테스트 | Playwright (JavaScript) |
 
 ---
 
@@ -9,318 +33,153 @@
 
 ```
 simple_board/
-├── api/                          # REST API 엔드포인트
-│   ├── signup.php                # POST /api/signup
-│   ├── login.php                 # POST /api/login
-│   ├── logout.php                # POST /api/logout
-│   ├── posts_list.php            # GET  /api/posts
-│   ├── posts_create.php          # POST /api/posts
-│   ├── posts_detail.php          # GET  /api/posts/{id}
-│   ├── posts_update.php          # PUT  /api/posts/{id}
-│   ├── posts_delete.php          # DELETE /api/posts/{id}
-│   └── comments_create.php       # POST /api/comments
-├── config/
-│   ├── database.php              # DB 접속 설정
-│   └── schema.sql                # DB 스키마 (초기화 SQL)
-├── includes/
-│   └── helpers.php               # 공통 유틸 함수
-├── public/
-│   ├── index.php                 # 라우터 (Front Controller)
-│   ├── .htaccess                 # URL 라우팅 설정
-│   ├── signup.php                # 회원가입 화면
-│   ├── login.php                 # 로그인 화면
-│   ├── posts.php                 # 게시글 목록 화면
-│   ├── post_write.php            # 게시글 작성 화면
-│   ├── post_detail.php           # 게시글 상세 화면
-│   ├── post_edit.php             # 게시글 수정 화면
-│   └── css/
-│       └── style.css             # 전역 스타일
-├── Simple_Board_API.postman_collection.json
-└── README.md
+├── api/                  # REST API 엔드포인트
+├── config/               # DB 설정 및 스키마
+├── includes/             # 공통 헬퍼 함수
+├── public/               # 프론트엔드 페이지
+├── tests/
+│   ├── auth.spec.js      # 회원가입/로그인 E2E 테스트
+│   └── posts.spec.js     # 게시글/댓글 E2E 테스트
+└── Simple_Board_API.postman_collection.json
 ```
-
----
-
-## ⚙️ XAMPP 설치 및 설정
-
-### 1단계 – 파일 배치
-
-```
-C:\xampp\htdocs\simple_board\   (Windows)
-/Applications/XAMPP/htdocs/simple_board/   (macOS)
-```
-
-폴더째로 복사 후, **Apache**와 **MySQL**을 XAMPP Control Panel에서 Start.
-
-### 2단계 – Apache mod_rewrite 활성화
-
-`C:\xampp\apache\conf\httpd.conf` 에서 아래 줄 주석 해제:
-
-```
-LoadModule rewrite_module modules/mod_rewrite.so
-```
-
-그리고 `<Directory "C:/xampp/htdocs">` 블록에서:
-
-```
-AllowOverride All
-```
-
-### 3단계 – 데이터베이스 초기화
-
-phpMyAdmin(`http://localhost/phpmyadmin`) 접속 후  
-**SQL 탭**에서 `config/schema.sql` 파일 내용을 붙여넣고 실행.
-
-또는 MySQL CLI:
-
-```bash
-mysql -u root -p < config/schema.sql
-```
-
-### 4단계 – 접속 확인
-
-| URL | 설명 |
-|-----|------|
-| `http://localhost/simple_board` | 메인 (→ /posts 리다이렉트) |
-| `http://localhost/simple_board/signup` | 회원가입 |
-| `http://localhost/simple_board/login` | 로그인 |
-| `http://localhost/simple_board/posts` | 게시글 목록 |
 
 ---
 
 ## 🔌 API 명세
 
-| Method | Endpoint | 인증 | 설명 |
-|--------|----------|------|------|
-| POST | `/api/signup` | ❌ | 회원가입 |
-| POST | `/api/login` | ❌ | 로그인 |
-| POST | `/api/logout` | ✅ | 로그아웃 |
-| GET | `/api/posts` | ✅ | 게시글 목록 |
-| POST | `/api/posts` | ✅ | 게시글 작성 |
-| GET | `/api/posts/{id}` | ✅ | 게시글 상세 + 조회수 증가 |
-| PUT | `/api/posts/{id}` | ✅ 본인 | 게시글 수정 |
-| DELETE | `/api/posts/{id}` | ✅ 본인 | 게시글 삭제 (논리 삭제) |
-| POST | `/api/comments` | ✅ | 댓글 작성 |
-
-### 공통 응답 형식
-
-**성공**
-```json
-{ "message": "성공 메시지", "data": {} }
-```
-
-**실패**
-```json
-{ "message": "에러 메시지" }
-```
-
-### HTTP 상태 코드
-
-| 코드 | 의미 |
-|------|------|
-| 200 | OK |
-| 201 | Created |
-| 400 | Bad Request (유효성 오류) |
-| 401 | Unauthorized (미인증) |
-| 403 | Forbidden (권한 없음) |
-| 404 | Not Found |
-| 409 | Conflict (중복) |
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| POST | `/api/signup` | 회원가입 |
+| POST | `/api/login` | 로그인 |
+| POST | `/api/logout` | 로그아웃 |
+| GET | `/api/posts` | 게시글 목록 |
+| POST | `/api/posts` | 게시글 작성 |
+| GET | `/api/posts/{id}` | 게시글 상세 |
+| PUT | `/api/posts/{id}` | 게시글 수정 |
+| DELETE | `/api/posts/{id}` | 게시글 삭제 |
+| POST | `/api/comments` | 댓글 작성 |
 
 ---
 
-## 🤖 Postman 자동화 테스트
+## ✅ 테스트 결과
 
-### 준비
+### Postman API 테스트
+- 총 15개 테스트 케이스 작성
+- 정상/비정상 시나리오 포함
+- Collection Runner로 전체 자동 실행
 
-1. Postman 실행
-2. `Simple_Board_API.postman_collection.json` Import
-3. Variables 탭에서 `baseUrl` 확인 (`http://localhost/simple_board`)
-
-### 실행 순서 (중요)
-
-로그인 세션 쿠키가 필요하므로 **순서대로** 실행:
-
-1. 🔐 인증 > [성공] 회원가입
-2. 🔐 인증 > [성공] 로그인  ← 세션 쿠키 생성
-3. 📝 게시글 > 나머지 테스트
-4. 💬 댓글 > 나머지 테스트
-5. 🔓 로그아웃
-
-### Collection Runner 전체 실행
-
-`Run Collection` → Delay 500ms 설정 후 실행
+### Playwright E2E 테스트
+```
+auth.spec.js  - 4개 passed
+posts.spec.js - 9개 passed
+총 13개 passed
+```
 
 ---
 
-## 🎭 Playwright 테스트 구조 (참고)
+## 🐛 버그 리포트
 
-```javascript
-// tests/auth.spec.js
-import { test, expect } from '@playwright/test';
+### BUG-001 | 로그아웃 후 댓글 작성 API 인증 미처리
 
-const BASE = 'http://localhost/simple_board';
+**심각도:** High
 
-test.describe('회원가입', () => {
-  test('성공 - 정상 가입 후 로그인 페이지 이동', async ({ page }) => {
-    await page.goto(`${BASE}/signup`);
-    await page.fill('#username', 'playwright01');
-    await page.fill('#password', 'password123');
-    await page.fill('#passwordConfirm', 'password123');
-    await page.fill('#nickname', '테스터');
-    await page.click('#btnSignup');
-    await expect(page).toHaveURL(/login/);
-  });
+**발견 방법:** Postman Collection Runner
 
-  test('실패 - 비밀번호 불일치', async ({ page }) => {
-    await page.goto(`${BASE}/signup`);
-    await page.fill('#username', 'playwright02');
-    await page.fill('#password', 'password123');
-    await page.fill('#passwordConfirm', 'different!!');
-    await page.fill('#nickname', '테스터2');
-    await page.click('#btnSignup');
-    await expect(page.locator('#alert')).toBeVisible();
-  });
-});
+**재현 순서:**
+1. POST /api/login 로그인
+2. POST /api/logout 로그아웃
+3. POST /api/comments 댓글 작성 시도
 
-test.describe('로그인', () => {
-  test('성공 - 게시글 목록 이동', async ({ page }) => {
-    await page.goto(`${BASE}/login`);
-    await page.fill('#username', 'playwright01');
-    await page.fill('#password', 'password123');
-    await page.click('#btnLogin');
-    await expect(page).toHaveURL(/posts/);
-  });
+**기대 결과:** 401 Unauthorized
 
-  test('실패 - 오류 메시지 출력', async ({ page }) => {
-    await page.goto(`${BASE}/login`);
-    await page.fill('#username', 'playwright01');
-    await page.fill('#password', 'wrongpass');
-    await page.click('#btnLogin');
-    await expect(page.locator('#alert')).toContainText('일치하지 않습니다');
-  });
-});
+**실제 결과:** 201 Created (댓글 작성 성공)
+
+**원인:** 로그아웃 후 Postman 세션 쿠키가 유지되어 서버가 인증된 상태로 처리
+
+---
+
+## 🔥 트러블슈팅 기록
+
+> 단순 테스트 실행이 아닌, 환경 구성부터 직접 부딪히며 해결한 과정입니다.
+
+### 1. XAMPP 서브디렉토리 라우팅 문제
+**증상:** localhost/simple_board/public/ 접속 시 전체 404 발생
+
+**원인 분석:**
+- Apache AllowOverride None 설정으로 .htaccess 미적용
+- PHP 리다이렉트 경로에 베이스 경로 누락
+- URI 매칭 로직의 경로 불일치
+
+**해결:**
+- httpd.conf 에서 AllowOverride All 설정
+- BASE_PATH 상수화로 경로 일관성 확보
+- index.php URI 파싱 로직 수정
+
+**인사이트:**
+> 개발/운영 환경 차이로 인한 경로 이슈는 환경변수나 상수로 베이스 경로를 관리해야 한다.
+> 실무에서도 로컬에선 되는데 서버에서 안 되는 패턴과 동일한 케이스.
+
+---
+
+### 2. MySQL DB 파일 손상
+**증상:** MySQL 시작 후 즉시 종료
+
+**에러 로그:**
+```
+Fatal error: Can't open and lock privilege tables: 
+Incorrect file format 'roles_mapping'
 ```
 
-### Playwright 설치 및 실행
+**해결:** backup 폴더로 data 초기화 후 재시작
 
+**인사이트:**
+> 에러 로그를 읽고 원인을 추적하는 능력이 QA에게도 필요하다.
+> 개발자에게 "안 돼요" 가 아니라 "이 에러 때문에 안 됩니다" 로 소통 가능.
+
+---
+
+### 3. Playwright 테스트 셀렉터 충돌
+**증상:** locator('text=수정') 이 2개 요소를 찾아 Fail
+
+**원인:** 게시글 제목에 '수정' 단어가 포함되어 버튼과 충돌
+
+**해결:** 테스트용 데이터에 셀렉터와 겹치는 단어 사용 금지
+
+**인사이트:**
+> 테스트 데이터 설계도 테스트 설계의 일부다.
+> 테스트 코드가 Fail 났을 때 버그인지 테스트 코드 문제인지 구분하는 것이 핵심.
+
+---
+
+## 💡 QA 관점 인사이트
+
+8년간 게임/앱/콘솔 도메인에서 쌓은 경험을 자동화 툴과 결합하면서 느낀 점:
+
+- **로그를 읽는 능력** → 에러 원인을 스스로 추적 가능
+- **버그 재현 능력** → 자동화 시나리오 설계에 그대로 활용
+- **도메인 경험** → 어떤 케이스가 버그 날지 예측 가능
+- **AI 활용** → 코드 생성은 AI, 판단과 검증은 QA
+
+> 자동화 툴은 도구일 뿐, QA의 핵심은 무엇을 테스트할지 아는 것이다.
+
+---
+
+## 🚀 실행 방법
+
+### 환경 설정
+1. XAMPP 설치 후 Apache, MySQL 시작
+2. config/schema.sql 을 phpMyAdmin에서 실행
+3. http://localhost/simple_board/public/ 접속
+
+### Playwright 테스트 실행
 ```bash
-npm init -y
-npm install -D @playwright/test
+cd tests
+npm install
 npx playwright install chromium
-
-npx playwright test
-npx playwright test --headed      # 브라우저 보이며 실행
-npx playwright test --ui          # UI 모드
+npx playwright test --headed
 ```
 
----
-
-## 🐍 Selenium (Python) 테스트 구조 (참고)
-
-```python
-# tests/test_auth.py
-import pytest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-BASE = "http://localhost/simple_board"
-
-@pytest.fixture
-def driver():
-    options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    driver = webdriver.Chrome(options=options)
-    driver.implicitly_wait(5)
-    yield driver
-    driver.quit()
-
-class TestSignup:
-    def test_success(self, driver):
-        driver.get(f"{BASE}/signup")
-        driver.find_element(By.ID, "username").send_keys("selenium01")
-        driver.find_element(By.ID, "password").send_keys("password123")
-        driver.find_element(By.ID, "passwordConfirm").send_keys("password123")
-        driver.find_element(By.ID, "nickname").send_keys("셀레니움유저")
-        driver.find_element(By.ID, "btnSignup").click()
-        WebDriverWait(driver, 5).until(EC.url_contains("login"))
-        assert "login" in driver.current_url
-
-    def test_password_mismatch(self, driver):
-        driver.get(f"{BASE}/signup")
-        driver.find_element(By.ID, "username").send_keys("selenium02")
-        driver.find_element(By.ID, "password").send_keys("password123")
-        driver.find_element(By.ID, "passwordConfirm").send_keys("mismatch!")
-        driver.find_element(By.ID, "nickname").send_keys("닉네임")
-        driver.find_element(By.ID, "btnSignup").click()
-        alert = WebDriverWait(driver, 5).until(
-            EC.visibility_of_element_located((By.ID, "alert"))
-        )
-        assert alert.is_displayed()
-
-class TestLogin:
-    def test_success(self, driver):
-        driver.get(f"{BASE}/login")
-        driver.find_element(By.ID, "username").send_keys("selenium01")
-        driver.find_element(By.ID, "password").send_keys("password123")
-        driver.find_element(By.ID, "btnLogin").click()
-        WebDriverWait(driver, 5).until(EC.url_contains("posts"))
-        assert "posts" in driver.current_url
-
-    def test_wrong_password(self, driver):
-        driver.get(f"{BASE}/login")
-        driver.find_element(By.ID, "username").send_keys("selenium01")
-        driver.find_element(By.ID, "password").send_keys("wrongpass")
-        driver.find_element(By.ID, "btnLogin").click()
-        alert = WebDriverWait(driver, 5).until(
-            EC.visibility_of_element_located((By.ID, "alert"))
-        )
-        assert "일치하지 않습니다" in alert.text
-```
-
-### Selenium 설치
-
-```bash
-pip install selenium pytest
-# ChromeDriver는 Chrome 버전에 맞게 자동 설치
-pip install webdriver-manager
-```
-
----
-
-## ✅ 테스트 시나리오 체크리스트
-
-### 회원가입
-- [ ] 정상 가입 → 로그인 페이지 이동
-- [ ] 아이디 중복 → 409 에러
-- [ ] 비밀번호 불일치 → 400 에러
-- [ ] 필수값 누락 → 400 에러
-- [ ] 아이디 3자 이하 → 400 에러
-- [ ] 비밀번호 7자 이하 → 400 에러
-
-### 로그인
-- [ ] 정상 로그인 → /posts 이동
-- [ ] 틀린 비밀번호 → 401 + 메시지 확인
-- [ ] 없는 아이디 → 401 + 메시지 확인
-- [ ] 미로그인 → /posts 접근 시 /login 리다이렉트
-
-### 게시글
-- [ ] 목록 조회 → 최신순 정렬
-- [ ] 작성 → 상세 페이지 이동
-- [ ] 제목 누락 작성 → 400 에러
-- [ ] 상세 조회 → 조회수 1 증가
-- [ ] 본인 글 수정 → 성공
-- [ ] 타인 글 수정 시도 → 403 에러
-- [ ] 본인 글 삭제 → 목록에서 미노출 (논리 삭제)
-- [ ] 타인 글 삭제 시도 → 403 에러
-- [ ] 수정/삭제 버튼 → 본인 글만 노출
-
-### 댓글
-- [ ] 정상 댓글 작성 → 페이지 갱신 후 노출
-- [ ] 내용 누락 → 400 에러
-- [ ] 미인증 댓글 시도 → 401 에러
-
-### 로그아웃
-- [ ] 로그아웃 → 세션 종료 → /login 이동
-- [ ] 로그아웃 후 /posts 접근 → /login 리다이렉트
+### Postman 테스트
+1. Simple_Board_API.postman_collection.json Import
+2. Environment에 baseUrl = http://localhost/simple_board/public 설정
+3. Collection Runner 실행
