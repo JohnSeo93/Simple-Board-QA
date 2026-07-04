@@ -74,6 +74,8 @@ simple_board/
 auth.spec.js  - 4개 passed
 posts.spec.js - 9개 passed
 총 13개 passed
+<img width="678" height="438" alt="image" src="https://github.com/user-attachments/assets/b26b4b7b-fef1-4369-8084-dae23591f8eb" />
+
 ```
 
 ---
