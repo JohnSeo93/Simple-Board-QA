@@ -66,6 +66,8 @@ simple_board/
 - 총 15개 테스트 케이스 작성
 - 정상/비정상 시나리오 포함
 - Collection Runner로 전체 자동 실행
+<img width="1900" height="1265" alt="Collection Runner2" src="https://github.com/user-attachments/assets/2542427a-6b9d-468b-abf5-77a068b896c6" />
+<img width="1883" height="1228" alt="Collection Runner1" src="https://github.com/user-attachments/assets/70253705-feb3-4ff4-8bc6-7fad2b40d158" />
 
 ### Playwright E2E 테스트
 ```
